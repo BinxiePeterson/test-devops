@@ -1,0 +1,65 @@
+---
+title: "Penguins EDA"
+format:
+  html:
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(dbplyr)
+library(dplyr)
+library(duckdb)
+library(ggplot2)
+```
+
+
+## Penguin Size and Mass by Sex and Species
+
+```{r}
+# Create a database connection.
+con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "my-db.duckdb")
+
+# Write the penguins data from the palmerpenguins package to a table in the DB and assign a name "pengiuns".
+DBI::dbWriteTable(conn = con,
+                  name = "penguins",
+                  value = palmerpenguins::penguins,
+                  overwrite = TRUE)
+
+# Extract the data from the "penguins" table.
+df <- dplyr::tbl(con, "penguins")
+
+```
+
+```{r}
+df %>%
+  group_by(species, sex) %>%
+  summarise(
+    across(
+        ends_with("mm") | ends_with("g"),
+      \(x) mean(x, na.rm = TRUE)
+      )
+    ) %>%
+  dplyr::collect() %>%
+  knitr::kable()
+
+# Disconnect from the database.
+DBI::dbDisconnect(con, shutdown = TRUE)
+
+# Shut down the local database.
+duckdb::duckdb_shutdown(duckdb::duckdb())
+```
+
+## Penguin Size vs Mass by Species
+
+```{r}
+df %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
