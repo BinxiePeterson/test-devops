@@ -1,0 +1,8 @@
+.Rhistory
+.Rprofile
+.Rproj.user/
+__pycache__/
+data/
+eda_files/
+env/
+renv/
