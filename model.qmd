@@ -21,7 +21,7 @@ from palmerpenguins import penguins
 
 con = duckdb.connect('my-db.duckdb')
 df = penguins.load_penguins()
-con.execute('CREATE TABLE penguins AS SELECT * FROM df')
+con.execute('CREATE OR REPLACE TABLE penguins AS SELECT * FROM df')
 con.close()
 
 con = duckdb.connect('my-db.duckdb')
@@ -58,6 +58,15 @@ v = VetiverModel(model, model_name="penguin_model", prototype_data=X)
 
 ```{python}
 import os
+from tempfile import mkdtemp
+
+# Create a temporary directory to store the app.py file for testing
+tmpdir = "." + mkdtemp()
+
+if not os.path.exists(tmpdir):
+    # Create the directory
+    os.makedirs(tmpdir)
+    print("Directory created successfully!")
 
 # Create a directory to use as the pin board
 board_directory = "data/model"
@@ -85,12 +94,11 @@ model_board = pins.board_folder(path="data/model", versioned=True, allow_pickle_
 
 # Pin the model to the board
 vetiver_pin_write(model_board, v)
-write_app(model_board, "penguin_model", file=board_directory + "/penguin_model.py")
+write_app(model_board, "penguin_model", file=tmpdir + "/penguin_model.py")
 ```
 
 ```{python}
 app = VetiverAPI(v, check_prototype=True)
 app.run(port = 8080)
 ```
-
 
