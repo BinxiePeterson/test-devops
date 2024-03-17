@@ -6,7 +6,11 @@ data/
 eda_files/
 env/
 renv/
-eda.html
+*.html
 model.ipynb
 my-db.duckdb
 test10.Rproj
+/env/
+/.quarto/
+model_files/
+tmp/
