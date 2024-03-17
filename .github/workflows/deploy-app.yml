@@ -36,9 +36,14 @@ jobs:
       - run: pip install jupyter
       - run: pip install -r requirements.txt
 
+      # Run model.qmd script.
+      - name: Run model.qmd
+      - run: quarto server model.qmd
+
       # Render and publish the shiny app on the gh-pages branch.
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
+        run:
         with:
           target: gh-pages
         env:
