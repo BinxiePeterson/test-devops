@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from shiny import App, render, ui, reactive
-import requests
+# import requests
 import logging
 
 logging.basicConfig(
