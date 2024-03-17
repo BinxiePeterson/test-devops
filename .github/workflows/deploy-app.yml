@@ -43,7 +43,7 @@ jobs:
       # Render and publish the shiny app on the gh-pages branch.
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
-        run:
+        run: Rscript app.R
         with:
           target: gh-pages
         env:
